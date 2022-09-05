@@ -99,7 +99,7 @@ if [ -f "recon/all-subdomains.txt" ]; then
 # Start Getting Parameters
 
     if [ ! -d "parameters" ]; then
-        mkdir parameters
+        mkdir parameters 
     fi
 
     cat wayback/new_wayback.txt |  awk -F '?' '{print $2}' | awk -F '=' '{print $1}' | sort -u >> parameters/wayback_new_params.txt
@@ -201,3 +201,4 @@ else
 
 fi
 
+# testing git xD lol 
