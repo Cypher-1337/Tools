@@ -62,7 +62,8 @@ if [ -f "recon/all-subdomains.txt" ]; then
     cat recon/new.txt | httpx --status-code -cl -title | tee recon/live_new.txt
 
 
-  
+# Start Collecting Wayback
+
     if [ -f "wayback/new_wayback.txt" ]; then
         rm wayback/new_wayback.txt
     fi
@@ -94,6 +95,14 @@ if [ -f "recon/all-subdomains.txt" ]; then
     cat wayback/new_wayback.txt | gf lfi | sed 's/=.*/=/' | sed 's/URL: //' | sort -u |tee wayback/new_gf/new_lfi.txt
     cat wayback/new_wayback.txt | gf redirect | sed 's/=.*/=/' | sed 's/URL: //' | sort -u |tee wayback/new_gf/new_redirect.txt
     cat wayback/new_wayback.txt | gf idor | sed 's/=.*/=/' | sed 's/URL: //' | sort -u |tee wayback/new_gf/new_idor.txt
+
+# Start Getting Parameters
+
+    if [ ! -d "parameters" ]; then
+        mkdir parameters
+    fi
+
+    cat wayback/new_wayback.txt |  awk -F '?' '{print $2}' | awk -F '=' '{print $1}' | sort -u >> parameters/wayback_new_params.txt
 
 #-----------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------
@@ -176,6 +185,14 @@ else
     cat wayback/wayback.txt | gf redirect | sed 's/=.*/=/' | sed 's/URL: //' | sort -u |tee wayback/gf/redirect_test.txt
     cat wayback/wayback.txt | gf idor | sed 's/=.*/=/' | sed 's/URL: //' | sort -u |tee wayback/gf/idor_test.txt
 
+
+# Start Getting Parameters
+
+    if [ ! -d "parameters" ]; then
+        mkdir parameters
+    fi
+
+    cat wayback/wayback.txt|  awk -F '?' '{print $2}' | awk -F '=' '{print $1}' | sort -u >> parameters/wayback_params.txt
 
 
 
