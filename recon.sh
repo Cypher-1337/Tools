@@ -110,7 +110,12 @@ function recon(){
 
         printf "\n${GREEN}[+] Getting subdomains ips...${NC}\n"
             cat recon/alive_d.txt | dnsx -silent -a -resp-only | tee recon/ip.txt
-        cat recon/ip.txt | sort -u | tee recon/ips.txt ; rm recon/ip.txt
+            cat recon/ip.txt | sort -u | tee recon/ips.txt ; rm recon/ip.txt
+
+        printf "\n${GREEN}[+] Scan with nrich...${NC}\n"
+
+            mkdir recon/scans
+            nrich recon/ips.txt >> recon/scans/nrich_scan.txt
 
         printf "\n${BLUE}[+] Getting 403 pages for dirsearch.....${NC}\n"
             mkdir recon/403
