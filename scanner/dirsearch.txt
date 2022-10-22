@@ -1,0 +1,38 @@
+301   169B   http://testphp.vulnweb.com:80/.idea    -> REDIRECTS TO: http://testphp.vulnweb.com/.idea/
+200     6B   http://testphp.vulnweb.com:80/.idea/.name
+200   951B   http://testphp.vulnweb.com:80/.idea/
+200   266B   http://testphp.vulnweb.com:80/.idea/misc.xml
+200   171B   http://testphp.vulnweb.com:80/.idea/encodings.xml
+200   275B   http://testphp.vulnweb.com:80/.idea/modules.xml
+200   173B   http://testphp.vulnweb.com:80/.idea/vcs.xml
+200   143B   http://testphp.vulnweb.com:80/.idea/scopes/scope_settings.xml
+200    12KB  http://testphp.vulnweb.com:80/.idea/workspace.xml
+200     5KB  http://testphp.vulnweb.com:80/404.php
+200     1B   http://testphp.vulnweb.com:80/CVS/Root
+200     1B   http://testphp.vulnweb.com:80/CVS/Entries
+200   595B   http://testphp.vulnweb.com:80/CVS/
+301   169B   http://testphp.vulnweb.com:80/Connections    -> REDIRECTS TO: http://testphp.vulnweb.com/Connections/
+200   400B   http://testphp.vulnweb.com:80/_mmServerScripts/
+200    93B   http://testphp.vulnweb.com:80/_mmServerScripts/MMHTTPDB.php
+301   169B   http://testphp.vulnweb.com:80/admin    -> REDIRECTS TO: http://testphp.vulnweb.com/admin/
+200   262B   http://testphp.vulnweb.com:80/admin/
+200   262B   http://testphp.vulnweb.com:80/admin/?/login
+200     5KB  http://testphp.vulnweb.com:80/cart.php
+403   276B   http://testphp.vulnweb.com:80/cgi-bin
+403   276B   http://testphp.vulnweb.com:80/cgi-bin/
+200   224B   http://testphp.vulnweb.com:80/crossdomain.xml
+200   894B   http://testphp.vulnweb.com:80/favicon.ico
+200   377B   http://testphp.vulnweb.com:80/images/
+301   169B   http://testphp.vulnweb.com:80/images    -> REDIRECTS TO: http://testphp.vulnweb.com/images/
+200     5KB  http://testphp.vulnweb.com:80/index.php
+200     3KB  http://testphp.vulnweb.com:80/index.bak
+200     3KB  http://testphp.vulnweb.com:80/index.zip
+200     5KB  http://testphp.vulnweb.com:80/login.php
+200     5KB  http://testphp.vulnweb.com:80/logout.php
+301   169B   http://testphp.vulnweb.com:80/pictures    -> REDIRECTS TO: http://testphp.vulnweb.com/pictures/
+200     5KB  http://testphp.vulnweb.com:80/product.php
+200     5KB  http://testphp.vulnweb.com:80/search.php
+301   169B   http://testphp.vulnweb.com:80/secured    -> REDIRECTS TO: http://testphp.vulnweb.com/secured/
+200     6KB  http://testphp.vulnweb.com:80/signup.php
+302    14B   http://testphp.vulnweb.com:80/userinfo.php    -> REDIRECTS TO: login.php
+200   268B   http://testphp.vulnweb.com:80/vendor/
