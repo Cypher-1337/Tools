@@ -253,6 +253,10 @@ function wayback(){
    
 }
 
+function scan(){
+    nuclei -l recon/alive.txt -o recon/scan/nuclei_results.txt
+}
+
 
 function all(){
     echo $1;
@@ -261,11 +265,12 @@ function all(){
 }
 
 
-while getopts r:w:a: options; do
+while getopts r:w:a:s: options; do
     case $options in
         r) recon "$OPTARG";;    # execute recon fucntion
         w) wayback "$OPTARG";;    # execute wayback funtion
         a) all "$OPTARG";;     # domain name
+        s) scan ;;              # Scan function
         \?) echo -e "Please provide \n-a for all \n-w for wayback \n-r for recon ";;
     esac
 done
