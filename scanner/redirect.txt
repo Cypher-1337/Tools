@@ -1,3 +1,0 @@
-http://testphp.vulnweb.com:80/cart.php%20[price=15000%20addcart=7'%22%20]
-http://testphp.vulnweb.com/showimage.php?file=
-http://testphp.vulnweb.com/showimage.php?file=./pictures/1.jpg&size=160

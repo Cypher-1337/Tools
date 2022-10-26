@@ -1,5 +1,16 @@
 #!/bin/bash
 
+<<<<<<< HEAD
+=======
+#### TO DO ####
+
+# add chameleon to the script
+
+
+
+
+
+>>>>>>> 12061c4 (developing Bash Recon project)
 ###### COLORS ########
 RED='\033[0;31m'
 NC='\033[0m'
@@ -50,6 +61,46 @@ printf "${GREEN}\n\n[+] $dir_count Directory Inserted Into Database \n\n${NC}"
 }
 
 
+<<<<<<< HEAD
+=======
+
+
+
+function nuclei_scan(){
+
+
+
+if [ ! -d "scanner/nuclei" ]; then
+    mkdir scanner/nuclei
+fi
+
+if [  -f "scanner/nuclei/result.txt" ]; then
+    rm scanner/nuclei/result.txt
+fi
+    
+    
+    nuclei -u $1 -o scanner/nuclei/result.txt
+
+
+    nuclei_count=0
+    while read result; do
+
+        mysql -u root -D content -e "INSERT INTO nuclei(nuclei_result, program_id, subdomain_id, nuclei_date) VALUES('$result', $p_id, $url_id, now())"
+        nuclei_count=$(($nuclei_count + 1))
+
+    done <scanner/nuclei/result.txt
+
+printf "${GREEN}\n\n[+] $nuclei_count Results Inserted into database \n\n${NC}"
+
+
+}
+
+
+
+
+
+
+>>>>>>> 12061c4 (developing Bash Recon project)
 function wayback(){
 
     printf "${ORANGE}[+] Getting Wayback for:\t\t $1 \n\n${NC}"
@@ -89,6 +140,10 @@ printf "${GREEN}\n\n[+] $wayback_count Wayback URL inserted into database \n\n${
     cat scanner/wayback.txt | gf sqli > scanner/sqli.txt
     cat scanner/wayback.txt | gf ssrf > scanner/ssrf.txt
     cat scanner/wayback.txt | gf idor > scanner/idor.txt
+<<<<<<< HEAD
+=======
+    cat scanner/wayback.txt | gf lfi > scanner/lfi.txt
+>>>>>>> 12061c4 (developing Bash Recon project)
     cat scanner/wayback.txt | gf redirect > scanner/redirect.txt
 
 #------------------------------------------------------------------------------------
@@ -171,6 +226,27 @@ while read redirect_url; do
 done <scanner/redirect.txt
 printf "${GREEN}\n\n[+] $redirect_count REDIRECT Inserted \n\n${NC}"
 
+<<<<<<< HEAD
+=======
+
+lfi_count=0
+while read lfi_url; do
+
+        check_lfi=$(mysql -u root -D content -N -B -e "SELECT gf_url FROM gf WHERE gf_url='$lfi_url' and gf_pattern='lfi' ")
+        if [ -z "$check_lfi" ]
+        then
+            mysql -u root -D content -e "INSERT INTO gf(gf_url, gf_pattern, program_id, subdomain_id, gf_date) VALUES(\"$lfi_url\", 'lfi', $p_id, $url_id, now())"
+            lfi_count=$(($lfi_count + 1))
+
+        fi
+
+done <scanner/lfi.txt
+printf "${GREEN}\n\n[+] $lfi_count LFI Inserted \n\n${NC}"
+
+#------------------------------------------------------------------------------------
+
+
+>>>>>>> 12061c4 (developing Bash Recon project)
 }
 
 
@@ -202,7 +278,11 @@ printf "${GREEN}\n\n[+] $crawl_count Crawl URL Inserted into database \n\n${NC}"
 
 
 
+<<<<<<< HEAD
 while getopts p:u:dwc options; do
+=======
+while getopts p:u:dwcna options; do
+>>>>>>> 12061c4 (developing Bash Recon project)
     case $options in
         p)  
 
@@ -236,9 +316,12 @@ while getopts p:u:dwc options; do
 
             fuzz "$url"
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 12061c4 (developing Bash Recon project)
             ;;
 
         w)
@@ -252,6 +335,22 @@ while getopts p:u:dwc options; do
 
             crawler "$url"
 
+<<<<<<< HEAD
+=======
+            ;;
+
+
+        n) 
+            nuclei_scan "$url"
+            ;;
+        a)
+
+            fuzz "$url"
+            wayback "$url"
+            crawler "$url"
+            nuclei_scan "$url"
+
+>>>>>>> 12061c4 (developing Bash Recon project)
             
         esac
 

@@ -1,5 +1,0 @@
-http://testphp.vulnweb.com:80/hpp/?pp=
-http://testphp.vulnweb.com/hpp/params.php?p=
-http://testphp.vulnweb.com/hpp/params.php?p=
-http://testphp.vulnweb.com:80/hpp/index.php?pp=
-http://testphp.vulnweb.com/hpp/params.php?p=

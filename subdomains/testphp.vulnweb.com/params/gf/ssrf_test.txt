@@ -1,3 +1,0 @@
-http://testphp.vulnweb.com:80/search.php?test=
-http://testphp.vulnweb.com/redir.php?e=
-http://testphp.vulnweb.com/showimage.php?file=

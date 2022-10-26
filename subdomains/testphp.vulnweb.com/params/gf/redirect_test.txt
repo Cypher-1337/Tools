@@ -1,3 +1,0 @@
-http://testphp.vulnweb.com:80/cart.php%20[price=
-http://testphp.vulnweb.com/redir.php?e=
-http://testphp.vulnweb.com/showimage.php?file=

@@ -1,4 +1,0 @@
-http://testphp.vulnweb.com:80/search.php?test=query
-http://testphp.vulnweb.com/search.php?test=query
-http://testphp.vulnweb.com/showimage.php?file=
-http://testphp.vulnweb.com/showimage.php?file=./pictures/1.jpg&size=160
