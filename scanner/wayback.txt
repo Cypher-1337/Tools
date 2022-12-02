@@ -1,0 +1,6 @@
+https://static.developer.sony.com/
+https://static.developer.sony.com/images
+https://static.developer.sony.com/manifest.json
+https://static.developer.sony.com/robots.txt
+https://static.developer.sony.com/sitemap.xml
+http://static.developer.sony.com/

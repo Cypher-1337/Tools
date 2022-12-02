@@ -1,7 +1,5 @@
 #!/bin/bash
 
-<<<<<<< HEAD
-=======
 #### TO DO ####
 
 # add chameleon to the script
@@ -10,7 +8,6 @@
 
 
 
->>>>>>> 12061c4 (developing Bash Recon project)
 ###### COLORS ########
 RED='\033[0;31m'
 NC='\033[0m'
@@ -56,19 +53,10 @@ function fuzz(){
 
 printf "${GREEN}\n\n[+] $dir_count Directory Inserted Into Database \n\n${NC}"
 
-    
-
 }
 
 
-<<<<<<< HEAD
-=======
-
-
-
 function nuclei_scan(){
-
-
 
 if [ ! -d "scanner/nuclei" ]; then
     mkdir scanner/nuclei
@@ -96,11 +84,6 @@ printf "${GREEN}\n\n[+] $nuclei_count Results Inserted into database \n\n${NC}"
 }
 
 
-
-
-
-
->>>>>>> 12061c4 (developing Bash Recon project)
 function wayback(){
 
     printf "${ORANGE}[+] Getting Wayback for:\t\t $1 \n\n${NC}"
@@ -135,16 +118,17 @@ printf "${GREEN}\n\n[+] $wayback_count Wayback URL inserted into database \n\n${
 
     printf "${ORANGE}[+] Running gf against Wayback Result:\t\t  \n\n${NC}"
 
+if [ ! -d "scanner/gf" ]; then
+    mkdir scanner/gf
+fi
 
-    cat scanner/wayback.txt | gf xss > scanner/xss.txt
-    cat scanner/wayback.txt | gf sqli > scanner/sqli.txt
-    cat scanner/wayback.txt | gf ssrf > scanner/ssrf.txt
-    cat scanner/wayback.txt | gf idor > scanner/idor.txt
-<<<<<<< HEAD
-=======
-    cat scanner/wayback.txt | gf lfi > scanner/lfi.txt
->>>>>>> 12061c4 (developing Bash Recon project)
-    cat scanner/wayback.txt | gf redirect > scanner/redirect.txt
+
+    cat scanner/wayback.txt | gf xss > scanner/gf/xss.txt
+    cat scanner/wayback.txt | gf sqli > scanner/gf/sqli.txt
+    cat scanner/wayback.txt | gf ssrf > scanner/gf/ssrf.txt
+    cat scanner/wayback.txt | gf idor > scanner/gf/idor.txt
+    cat scanner/wayback.txt | gf lfi > scanner/gf/lfi.txt
+    cat scanner/wayback.txt | gf redirect > scanner/gf/redirect.txt
 
 #------------------------------------------------------------------------------------
 
@@ -159,7 +143,7 @@ while read xss_url; do
 
         fi
 
-done <scanner/xss.txt
+done <scanner/gf/xss.txt
 printf "${GREEN}\n\n[+] $xss_count XSS Inserted \n\n${NC}"
 
 #------------------------------------------------------------------------------------
@@ -175,7 +159,7 @@ while read sqli_url; do
 
         fi
 
-done <scanner/sqli.txt
+done <scanner/gf/sqli.txt
 printf "${GREEN}\n\n[+] $sqli_count SQLI Inserted \n\n${NC}"
 
 #------------------------------------------------------------------------------------
@@ -191,7 +175,7 @@ while read ssrf_url; do
 
         fi
 
-done <scanner/ssrf.txt
+done <scanner/gf/ssrf.txt
 printf "${GREEN}\n\n[+] $ssrf_count SSRF Inserted \n\n${NC}"
 
 #------------------------------------------------------------------------------------
@@ -207,7 +191,7 @@ while read idor_url; do
 
         fi
 
-done <scanner/idor.txt
+done <scanner/gf/idor.txt
 printf "${GREEN}\n\n[+] $idor_count IDOR Inserted \n\n${NC}"
 
 #------------------------------------------------------------------------------------
@@ -223,11 +207,9 @@ while read redirect_url; do
 
         fi
 
-done <scanner/redirect.txt
+done <scanner/gf/redirect.txt
 printf "${GREEN}\n\n[+] $redirect_count REDIRECT Inserted \n\n${NC}"
 
-<<<<<<< HEAD
-=======
 
 lfi_count=0
 while read lfi_url; do
@@ -240,13 +222,12 @@ while read lfi_url; do
 
         fi
 
-done <scanner/lfi.txt
+done <scanner/gf/lfi.txt
 printf "${GREEN}\n\n[+] $lfi_count LFI Inserted \n\n${NC}"
 
 #------------------------------------------------------------------------------------
 
 
->>>>>>> 12061c4 (developing Bash Recon project)
 }
 
 
@@ -270,19 +251,72 @@ function crawler(){
             crawl_count=$(($crawl_count + 1))
 
         fi
-    done <scanner/wayback.txt
+    done <scanner/crawler.txt
 
 printf "${GREEN}\n\n[+] $crawl_count Crawl URL Inserted into database \n\n${NC}"
 
 }
 
 
+function js(){
 
-<<<<<<< HEAD
-while getopts p:u:dwc options; do
-=======
-while getopts p:u:dwcna options; do
->>>>>>> 12061c4 (developing Bash Recon project)
+    cat scanner/wayback.txt | grep "\.js" >> scanner/js_urls
+    cat scanner/crawler.txt | grep "\.js" >> scanner/js_urls
+    echo $1 | getJS --complete >> scanner/js_urls
+
+    cat scanner/js_urls | sort -u | tee scanner/js_urls.txt    ; rm scanner/js_urls
+
+    js_count=0
+    while read js_url; do
+
+        check_js=$(mysql -u root -D content -N -B -e "SELECT js_url FROM js WHERE js_url='$js_url'")
+
+        if [ -z "$check_js" ]
+        then
+            mysql -u root -D content -e "INSERT INTO js(js_url, program_id, subdomain_id, js_date) VALUES(\"$js_url\", $p_id, $url_id, now())"
+            js_count=$(($js_count + 1))
+
+        fi
+
+    done <scanner/js_urls.txt
+
+printf "${GREEN}\n\n[+] $js_count JS URL Inserted into database \n\n${NC}"
+
+}
+
+function endpoints(){
+    mysql -u root -D content -N -B -e "SELECT crawler_url from crawler where subdomain_id=$1" >> scanner/endpoints
+    mysql -u root -D content -N -B -e "SELECT wayback_url from wayback where subdomain_id=$1" >> scanner/endpoints
+    mysql -u root -D content -N -B -e "SELECT endpoint from dirsearch where subdomain_id=$1" >> scanner/endpoints
+
+    cat scanner/endpoints | sort -u > scanner/endpoints.txt
+    cat scanner/endpoints.txt | httpx -retries 3 -timeout 10 -nc --status-code -cl | tee scanner/endpoint_live
+
+    sed 's/\[//g' scanner/endpoint_live | sed 's/\]//g' >> scanner/endpoint_live.txt 
+
+    alive_count=0
+    while read domain; do
+        end_url=$(echo $domain | awk '/ / {print $1}')
+        end_status=$(echo $domain | awk '/ / {print $2}')
+        end_size=$(echo $domain | awk '/ / {print $3}')
+
+        check_live=$(mysql -u root -D content -N -B -e "SELECT endpoint FROM endpoints WHERE endpoint='$end_url'")
+        if [ -z "$check_live" ]
+        then
+
+            mysql -u root -D content -e "INSERT INTO endpoints(endpoint, status, size, program_id, subdomain_id, e_date) VALUES('$end_url', $end_status, $end_size, $p_id, $url_id, now())"
+            alive_count=$(($alive_count + 1))
+        fi
+    done <scanner/endpoint_live.txt
+
+    rm scanner/endpoints scanner/endpoint_live
+
+printf "${GREEN}\n\n[+] $alive_count Alive Endpoint inserted into database \n\n${NC}"
+
+
+}
+
+while getopts p:u:dwcnjea options; do
     case $options in
         p)  
 
@@ -316,12 +350,6 @@ while getopts p:u:dwcna options; do
 
             fuzz "$url"
 
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 12061c4 (developing Bash Recon project)
             ;;
 
         w)
@@ -335,13 +363,21 @@ while getopts p:u:dwcna options; do
 
             crawler "$url"
 
-<<<<<<< HEAD
-=======
             ;;
 
 
         n) 
             nuclei_scan "$url"
+            ;;
+
+
+        j)
+
+            js "$url"
+            ;;
+
+        e)
+            endpoints "$url_id"
             ;;
         a)
 
@@ -349,8 +385,8 @@ while getopts p:u:dwcna options; do
             wayback "$url"
             crawler "$url"
             nuclei_scan "$url"
-
->>>>>>> 12061c4 (developing Bash Recon project)
+            js "$url"
+            endpoints "$url_id"
             
         esac
 

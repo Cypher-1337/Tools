@@ -11,15 +11,11 @@ UGreen='\033[4;32m'
 ######################
 
 if [ ! -d "recon" ]; then
-<<<<<<< HEAD
-        mkdir recon
-    fi
-=======
+
     mkdir recon
 fi
->>>>>>> 12061c4 (developing Bash Recon project)
 
-
+   
 
 function recon(){
 
@@ -30,24 +26,17 @@ function recon(){
     
 printf "${ORANGE}[+] Getting subdomain for $2 & $1 \n\n${NC}"
 
-<<<<<<< HEAD
-    subfinder -d $2 >> recon/all_subdomains
-
-
-    count=0
-    for subdomain in $(cat recon/all_subdomains); do
-=======
     amass enum -d $2 -o recon/all_subdomains
     subfinder -d $2 >> recon/all_subdomains
     assetfinder -subs-only $2 >> recon/all_subdomains
 
     findomain -t $2 -u recon/findomain.txt ; cat recon/findomain.txt >> recon/all_subdomains ; rm recon/findomain.txt
+
     cat recon/all_subdomains | sort -u | tee recon/all_subdomains.txt
 
 
     count=0
     for subdomain in $(cat recon/all_subdomains.txt); do
->>>>>>> 12061c4 (developing Bash Recon project)
         
         check_domain=$(mysql -u root -D recon -N -B -e "SELECT subdomain FROM subdomains WHERE subdomain='$subdomain'")
         if [ -z "$check_domain" ]
@@ -68,11 +57,11 @@ printf "${GREEN}\n\n[+] $count Subdomains inserted into database \n\n${NC}"
 
 printf "${ORANGE}\n\n[+] Getting Live Subdomains $2 & $1 \n\n${NC}"
 
-<<<<<<< HEAD
-    cat recon/all_subdomains | httpx -nc --status-code -cl >> recon/alive
-=======
-    cat recon/all_subdomains.txt | httpx -nc --status-code -cl >> recon/alive
->>>>>>> 12061c4 (developing Bash Recon project)
+
+    # cat recon/all_subdomains | httpx -nc --status-code -cl >> recon/alive
+
+    cat recon/all_subdomains.txt | httpx -retries 3 -timeout 10 -nc --status-code -cl >> recon/alive
+
     
     sed 's/\[//g' recon/alive | sed 's/\]//g' >> recon/alive.txt 
   
@@ -86,7 +75,7 @@ printf "${ORANGE}\n\n[+] Getting Live Subdomains $2 & $1 \n\n${NC}"
         if [ -z "$check_live" ]
         then
 
-            mysql -u root -D recon -e "INSERT INTO live(alive, status, size, program_id, alive_date) VALUES('$url', $status, $size, $p_id, now())"
+            mysql -u root -D recon -e "INSERT INTO live(alive, status, size, is_scanned, program_id, alive_date) VALUES('$url', $status, $size, 0, $p_id, now())"
             alive_count=$(($alive_count + 1))
 
 
@@ -95,25 +84,24 @@ printf "${ORANGE}\n\n[+] Getting Live Subdomains $2 & $1 \n\n${NC}"
 
 printf "${GREEN}\n\n[+] $alive_count Alive URL inserted into database \n\n${NC}"
 
-<<<<<<< HEAD
-    rm recon/all_subdomains recon/alive.txt recon/recon/alive
-=======
-    rm recon/all_subdomains recon/alive.txt 
->>>>>>> 12061c4 (developing Bash Recon project)
+
+    rm recon/all_subdomains recon/alive.txt recon/alive
+
+    
 
 }
 
 
 
-<<<<<<< HEAD
 
-=======
+
+
 function bruteforce(){
 
     printf "${ORANGE}\n\n[+] Testing for bruteforce $2 & $1 \n\n${NC}"
 
 }
->>>>>>> 12061c4 (developing Bash Recon project)
+
 
 
 #-------------------------------------------------------------------
@@ -130,7 +118,7 @@ function wayback(){
     waybackurls $2 >> recon/wayback
     gauplus -subs $2 >> recon/wayback
 
-<<<<<<< HEAD
+
     cat recon/wayback | uro | sort -u | tee recon/wayback.txt
 
 printf "${ORANGE}\n\n[+] Inserting to the Database \n\n${NC}"
@@ -153,13 +141,13 @@ printf "${ORANGE}\n\n[+] Inserting to the Database \n\n${NC}"
     done <recon/wayback.txt
 
 printf "${GREEN}\n\n[+] $wayback_count Wayback URL inserted into database \n\n${NC}"
-=======
+
     cat recon/wayback | uro | sort -u >> recon/waybacks
 
     cat recon/waybacks | sort -u >> recon/wayback.txt
 
     rm recon/wayback recon/waybacks
->>>>>>> 12061c4 (developing Bash Recon project)
+    
 
 
 }
@@ -168,11 +156,9 @@ printf "${GREEN}\n\n[+] $wayback_count Wayback URL inserted into database \n\n${
 
 
 
-<<<<<<< HEAD
-while getopts p:d:rw options; do
-=======
+
+
 while getopts p:d:rwba options; do
->>>>>>> 12061c4 (developing Bash Recon project)
     case $options in
         p)  
             # query to check if program already exist in db
@@ -181,10 +167,10 @@ while getopts p:d:rwba options; do
             if [ -z "$p_name" ]
             then
                 mysql -u root -D recon -e "INSERT INTO program(p_name, p_date) VALUES('$OPTARG', now())"
-<<<<<<< HEAD
-=======
+
+
                 printf "${GREEN}[+] \t $OPTARG  \t\t Inserting to database.\n${NC}"
->>>>>>> 12061c4 (developing Bash Recon project)
+                
 
             else
                 printf "${BLUE}[+]${GREEN} \t $p_name ${BLUE} \t\t Program Exist.\n${NC}"
@@ -209,11 +195,11 @@ while getopts p:d:rwba options; do
                 if [ -z "$domain" ]
                 then
                     mysql -u root -D recon -e "INSERT INTO domains(domain, program_id, d_date) VALUES('$OPTARG', $p_id, now())"
-<<<<<<< HEAD
-=======
+
+
                     printf "${GREEN}[+] \t $OPTARG  \t\t Inserting to database.\n${NC}"
 
->>>>>>> 12061c4 (developing Bash Recon project)
+
                 else
 
                     printf "${BLUE}[+]${GREEN} \t $domain ${BLUE} \t\t Domain Exist.\n${NC}"
@@ -235,8 +221,8 @@ while getopts p:d:rwba options; do
             
         ;;
 
-<<<<<<< HEAD
-=======
+
+
         b)
 
             bruteforce "$program_name" "$domain_name"
@@ -247,7 +233,7 @@ while getopts p:d:rwba options; do
 
             recon "$program_name" "$domain_name"
             wayback "$program_name" "$domain_name"
->>>>>>> 12061c4 (developing Bash Recon project)
+
 
         # \?) echo -e "Please provide \n-a for all \n-w for wayback \n-r for recon ";;
         
