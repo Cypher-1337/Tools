@@ -235,8 +235,9 @@ function crawler(){
 
     printf "${ORANGE}[+] Crawling Target:\t\t $1 \n\n${NC}"
 
-    echo $1 | hakrawler -t 3 -u | tee scanner/crawler.txt
-    
+    katana -u $1 -jc -o scanner/crawler
+    echo $1 | hakrawler -t 3 -u | tee -a scanner/crawler
+    cat scanner/crawler | sort -u | tee scanner/crawler.txt     ; rm scanner/crawler
 
     printf "${ORANGE}[+] Inserting to Database \n\n${NC}"
 
