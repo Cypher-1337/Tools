@@ -23,6 +23,14 @@ if [ ! -d "scanner" ]; then
     mkdir scanner
 fi
 
+
+
+
+
+# 
+#          FUZZING
+#
+
 function fuzz(){
 
 
@@ -83,6 +91,12 @@ printf "${GREEN}\n\n[+] $nuclei_count Results Inserted into database \n\n${NC}"
 
 }
 
+
+
+
+###
+###     WAYBACK
+###
 
 function wayback(){
 
@@ -231,6 +245,13 @@ printf "${GREEN}\n\n[+] $lfi_count LFI Inserted \n\n${NC}"
 }
 
 
+
+
+
+###
+###     CRAWLER
+###
+
 function crawler(){
 
     printf "${ORANGE}[+] Crawling Target:\t\t $1 \n\n${NC}"
@@ -259,6 +280,13 @@ printf "${GREEN}\n\n[+] $crawl_count Crawl URL Inserted into database \n\n${NC}"
 }
 
 
+
+
+
+###
+###     JS
+###
+
 function js(){
 
     cat scanner/wayback.txt | grep "\.js" >> scanner/js_urls
@@ -285,13 +313,21 @@ printf "${GREEN}\n\n[+] $js_count JS URL Inserted into database \n\n${NC}"
 
 }
 
+
+
+
+
+###
+###     ENDPOINTS
+###
+
 function endpoints(){
     mysql -u root -D content -N -B -e "SELECT crawler_url from crawler where subdomain_id=$1" >> scanner/endpoints
     mysql -u root -D content -N -B -e "SELECT wayback_url from wayback where subdomain_id=$1" >> scanner/endpoints
     mysql -u root -D content -N -B -e "SELECT endpoint from dirsearch where subdomain_id=$1" >> scanner/endpoints
 
     cat scanner/endpoints | sort -u > scanner/endpoints.txt
-    cat scanner/endpoints.txt | httpx -retries 3 -timeout 10 -nc --status-code -cl | tee scanner/endpoint_live
+    cat scanner/endpoints.txt | httpx -nc --status-code -cl | tee scanner/endpoint_live
 
     sed 's/\[//g' scanner/endpoint_live | sed 's/\]//g' >> scanner/endpoint_live.txt 
 
@@ -310,12 +346,27 @@ function endpoints(){
         fi
     done <scanner/endpoint_live.txt
 
+    cat scanner/endpoint_live.txt | aquatone -screenshot-timeout 50000 -resolution "1366,768" -http-timeout 5000 -out scanner/aquatone
+
+    chmod 775 scanner/aquatone/screenshots/*
+    
     rm scanner/endpoints scanner/endpoint_live
 
 printf "${GREEN}\n\n[+] $alive_count Alive Endpoint inserted into database \n\n${NC}"
 
 
 }
+
+
+
+
+
+
+
+###
+###     FLAGS
+###
+
 
 while getopts p:u:dwcnjea options; do
     case $options in

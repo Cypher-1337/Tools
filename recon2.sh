@@ -60,7 +60,7 @@ printf "${ORANGE}\n\n[+] Getting Live Subdomains $2 & $1 \n\n${NC}"
 
     # cat recon/all_subdomains | httpx -nc --status-code -cl >> recon/alive
 
-    cat recon/all_subdomains.txt | httpx -retries 3 -timeout 10 -nc --status-code -cl >> recon/alive
+    cat recon/all_subdomains.txt | httpx -nc --status-code -cl >> recon/alive
 
     
     sed 's/\[//g' recon/alive | sed 's/\]//g' >> recon/alive.txt 
